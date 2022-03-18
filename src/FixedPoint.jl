@@ -29,14 +29,14 @@ returns a named tuple (x, error, iters) where:
     `iters` : total number of iterations performed
 """
 function afps(
-    f,
-    x;
+    f::Fun,
+    x::Mat;
     iters::Int = 5000,
-    vel::Float64 = 0.9,
-    ep::Float64 = 0.01,
-    tol::Float64 = 1e-12,
+    vel::T = 0.9,
+    ep::T = 0.01,
+    tol::T = 1e-12,
     grad_norm = x -> maximum(abs, x),
-)
+) where {T <: Number, Mat<:Union{AbstractArray{T},T}, Fun <: Function}
     x_n = identity.(x)
     v_n = zero(x_n)
     β = vel
