@@ -26,7 +26,7 @@ returns a named tuple (x, error, iters) where:
 
 
 # Examples
-Scalar function example
+## Scalar function example
 
 ```julia
 using FixedPoint
@@ -34,7 +34,7 @@ s = afps(x -> 2 - x^2 + x, 1.3)
 @show s.x, √2
 ```
 
-Vector function example
+## Vector function example
 ```julia
 using FixedPoint, LinearAlgebra
 Ts = LinRange(0.01, 2.0, 500)
@@ -46,4 +46,22 @@ s = afps(
     iters = 5000,
 )
 @show norm(f(s.x).-s.x)
+```
+
+## Inplace version
+for the inplace method use `afps!` as
+```julia
+Ts = LinRange(0.01, 2.0, 500)
+βs = 1 ./ Ts
+function f!(out,x)
+    @. out = tanh(βs * x)
+end
+x  = zero(βs) .+ 1 
+afps!(
+    f!,
+    x,
+    grad_norm = x -> maximum(abs, x),
+    iters = 5000,
+)
+@show maximum(abs, x .- tanh.(βs .* x))
 ```
